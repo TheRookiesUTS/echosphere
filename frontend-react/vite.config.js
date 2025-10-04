@@ -17,7 +17,19 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false, // Disable sourcemaps in production
+    minify: 'esbuild', // Use esbuild for faster minification
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Code splitting - separate large dependencies
+          'react-vendor': ['react', 'react-dom'],
+          'map-vendor': ['leaflet', 'react-leaflet'],
+          'ui-vendor': ['lucide-react', 'zustand'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Increase warning limit
   },
 })
 

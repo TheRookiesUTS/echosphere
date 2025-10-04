@@ -7,11 +7,15 @@ import LoadingOverlay from './components/LoadingOverlay'
 import { useStore } from './store/useStore'
 
 function App() {
-  const { loading, initializeData } = useStore()
+  // Use selective subscription to avoid unnecessary re-renders
+  const loading = useStore((state) => state.loading)
+  const initializeData = useStore((state) => state.initializeData)
 
   useEffect(() => {
     initializeData()
-  }, [initializeData])
+    // Only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700">

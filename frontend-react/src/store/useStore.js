@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { api } from '../services/api'
+import { shallow } from 'zustand/shallow'
 
 const CITIES = {
   kualalumpur: { lat: 3.1390, lng: 101.6869, name: 'Kuala Lumpur' },
@@ -13,8 +14,11 @@ const CITIES = {
   tokyo: { lat: 35.6762, lng: 139.6503, name: 'Tokyo' }
 }
 
+// Only enable devtools in development
+const withDevtools = import.meta.env.DEV ? devtools : (config) => config
+
 export const useStore = create(
-  devtools((set, get) => ({
+  withDevtools((set, get) => ({
     // Map state
     currentCity: 'kualalumpur',
     mapCenter: [3.1390, 101.6869],

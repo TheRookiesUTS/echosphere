@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Thermometer, Wind, Droplet, Leaf } from 'lucide-react'
 import { useStore } from '../../store/useStore'
 
@@ -36,8 +37,9 @@ const metricsConfig = [
   },
 ]
 
-export default function MetricsGrid() {
-  const { metrics } = useStore()
+export default memo(function MetricsGrid() {
+  // Selective subscription - only subscribe to metrics
+  const metrics = useStore((state) => state.metrics)
 
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -62,5 +64,5 @@ export default function MetricsGrid() {
       ))}
     </div>
   )
-}
+})
 

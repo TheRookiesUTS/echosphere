@@ -1,13 +1,15 @@
 import { MapContainer as LeafletMap, TileLayer, useMap } from 'react-leaflet'
 import { useStore } from '../../store/useStore'
-import { useEffect } from 'react'
+import { useEffect, memo } from 'react'
 import StatusPanel from './StatusPanel'
 import 'leaflet/dist/leaflet.css'
 
 // Component to update map view when center/zoom changes
-function MapController() {
+const MapController = memo(function MapController() {
   const map = useMap()
-  const { mapCenter, mapZoom } = useStore()
+  // Selective subscription - only subscribe to what we need
+  const mapCenter = useStore((state) => state.mapCenter)
+  const mapZoom = useStore((state) => state.mapZoom)
 
   useEffect(() => {
     if (mapCenter && mapZoom) {
@@ -16,7 +18,7 @@ function MapController() {
   }, [mapCenter, mapZoom, map])
 
   return null
-}
+})
 
 // Base layer URLs
 const baseLayers = {
@@ -26,11 +28,15 @@ const baseLayers = {
   streets: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 }
 
-export default function MapContainer() {
-  const { mapCenter, mapZoom, baseLayer } = useStore()
+// Memoize the entire map container
+export default memo(function MapContainer() {
+  // Selective subscriptions
+  const mapCenter = useStore((state) => state.mapCenter)
+  const mapZoom = useStore((state) => state.mapZoom)
+  const baseLayer = useStore((state) => state.baseLayer)
 
   return (
-    <section className="relative bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden border border-white/20">
+    <section className="relative bg-white/10 rounded-2xl overflow-hidden border border-white/20">
       <LeafletMap
         center={mapCenter}
         zoom={mapZoom}
@@ -48,5 +54,5 @@ export default function MapContainer() {
       <StatusPanel />
     </section>
   )
-}
+})
 
