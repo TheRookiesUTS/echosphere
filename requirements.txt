@@ -1,0 +1,13 @@
+# FastAPI Core (Python 3.13 compatible versions)
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.6
+pydantic-settings==2.7.1
+
+# External API clients
+httpx==0.28.1
+openai==1.59.5
+
+# Utilities
+python-dotenv==1.0.1
+
