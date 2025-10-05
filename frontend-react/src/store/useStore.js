@@ -57,6 +57,7 @@ export const useStore = create(
     selectedArea: null,
     selectedAreaData: null,
     selectionMode: false,
+    selectionBox: null,
     
     // Elevation data
     elevationProfile: null,
@@ -108,6 +109,7 @@ export const useStore = create(
     setSelectedArea: (area) => set({ selectedArea: area }),
     setSelectedAreaData: (data) => set({ selectedAreaData: data }),
     setSelectionMode: (mode) => set({ selectionMode: mode }),
+    setSelectionBox: (box) => set({ selectionBox: box }),
     
     setElevationProfile: (profile) => set({ elevationProfile: profile }),
     toggleContours: () => set((state) => ({ showContours: !state.showContours })),

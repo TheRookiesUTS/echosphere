@@ -1,7 +1,6 @@
 import { memo } from 'react'
 import DataLayers from './DataLayers'
 import PlanningScenarios from './PlanningScenarios'
-import CitySelector from './CitySelector'
 import SearchLocation from './SearchLocation'
 import MapLayers from './MapLayers'
 import AreaSelection from './AreaSelection'
@@ -13,7 +12,6 @@ export default memo(function Sidebar() {
       <div className="space-y-6">
         <DataLayers />
         <PlanningScenarios />
-        <CitySelector />
         <SearchLocation />
         <MapLayers />
         <AreaSelection />

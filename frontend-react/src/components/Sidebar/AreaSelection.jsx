@@ -2,7 +2,7 @@ import { Crop, X, Crosshair } from 'lucide-react'
 import { useStore } from '../../store/useStore'
 
 export default function AreaSelection() {
-  const { selectedArea, selectedAreaData, selectionMode, setSelectionMode, setSelectedArea, setSelectedAreaData } = useStore()
+  const { selectedArea, selectedAreaData, selectionMode, setSelectionMode, setSelectedArea, setSelectedAreaData, setMapCenter, setMapZoom } = useStore()
 
   const toggleSelection = () => {
     setSelectionMode(!selectionMode)
@@ -13,7 +13,19 @@ export default function AreaSelection() {
     setSelectedAreaData(null)
   }
 
-  return (
+  const focusOnArea = () => {
+    if (selectedArea && selectedArea.bounds) {
+      // Calculate center of the selected area
+      const bounds = selectedArea.bounds
+      const centerLat = bounds.reduce((sum, point) => sum + point[0], 0) / bounds.length
+      const centerLng = bounds.reduce((sum, point) => sum + point[1], 0) / bounds.length
+      
+      setMapCenter([centerLat, centerLng])
+      setMapZoom(15) // Zoom in closer when focusing on area
+    }
+  }
+
+    return (
     <div>
       <h3 className="flex items-center gap-2 text-primary-400 font-semibold mb-4">
         <Crop className="w-5 h-5" />
@@ -52,6 +64,7 @@ export default function AreaSelection() {
                 Clear Selection
               </button>
               <button
+                onClick={focusOnArea}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border border-white/20 rounded-lg font-semibold text-white text-sm transition-all hover:bg-white/20"
               >
                 <Crosshair className="w-4 h-4" />
@@ -60,6 +73,19 @@ export default function AreaSelection() {
             </>
           )}
         </div>
+
+        {/* Selection Instructions */}
+        {selectionMode && (
+          <div className="bg-blue-600/20 border border-blue-400/30 rounded-lg p-3 mb-3">
+            <div className="flex items-center gap-2 text-blue-200 text-sm">
+              <Crop className="w-4 h-4" />
+              <span>Click and drag to create a selection box</span>
+            </div>
+            <div className="mt-1 text-xs text-blue-300">
+              Hold mouse button and drag to select an area
+            </div>
+          </div>
+        )}
 
         <div className="bg-white/5 border border-white/10 rounded-lg p-4">
           {selectedAreaData ? (
@@ -94,7 +120,7 @@ export default function AreaSelection() {
             </div>
           ) : (
             <p className="text-gray-400 text-sm text-center">
-              Click "Select Area" to draw a focus region
+              Click "Select Area" to drag and select a region
             </p>
           )}
         </div>

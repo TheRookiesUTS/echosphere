@@ -1,18 +1,12 @@
-import { Search } from 'lucide-react'
+import { Search, MapPin } from 'lucide-react'
 import { useState } from 'react'
 import { useStore } from '../../store/useStore'
 import { toast } from '../../utils/toast'
 
-const quickLocations = [
-  { name: 'New York', lat: 40.7128, lng: -74.0060 },
-  { name: 'London', lat: 51.5074, lng: -0.1278 },
-  { name: 'Tokyo', lat: 35.6762, lng: 139.6503 },
-  { name: 'Sydney', lat: -33.8688, lng: 151.2093 },
-]
-
 export default function SearchLocation() {
   const [searchQuery, setSearchQuery] = useState('')
-  const { setMapCenter, setMapZoom } = useStore()
+  const { setMapCenter, setMapZoom, getCities, setCurrentCity } = useStore()
+  const cities = getCities()
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -60,13 +54,19 @@ export default function SearchLocation() {
     toast.success(`Navigated to ${name}`)
   }
 
+  const goToCity = (cityKey) => {
+    setCurrentCity(cityKey)
+    setSearchQuery('')
+  }
+
   return (
     <div>
       <h3 className="flex items-center gap-2 text-primary-400 font-semibold mb-4">
-        <Search className="w-5 h-5" />
-        Search Location
+        <MapPin className="w-5 h-5" />
+        Search & Select Location
       </h3>
       <div className="space-y-3">
+        {/* Search Input */}
         <div className="flex gap-2">
           <input
             type="text"
@@ -83,16 +83,42 @@ export default function SearchLocation() {
             <Search className="w-5 h-5" />
           </button>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          {quickLocations.map((location) => (
-            <button
-              key={location.name}
-              onClick={() => goToLocation(location.lat, location.lng, location.name)}
-              className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xs transition-all hover:bg-white/20 hover:-translate-y-0.5"
-            >
-              {location.name}
-            </button>
-          ))}
+
+        {/* Predefined Cities */}
+        <div>
+          <div className="text-xs text-gray-400 mb-2">Quick Select Cities:</div>
+          <div className="grid grid-cols-2 gap-2">
+            {Object.entries(cities).map(([key, city]) => (
+              <button
+                key={key}
+                onClick={() => goToCity(key)}
+                className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xs transition-all hover:bg-white/20 hover:-translate-y-0.5"
+              >
+                {city.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Additional Popular Cities */}
+        <div>
+          <div className="text-xs text-gray-400 mb-2">Popular Destinations:</div>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { name: 'New York', lat: 40.7128, lng: -74.0060 },
+              { name: 'London', lat: 51.5074, lng: -0.1278 },
+              { name: 'Paris', lat: 48.8566, lng: 2.3522 },
+              { name: 'Dubai', lat: 25.2048, lng: 55.2708 }
+            ].map((location) => (
+              <button
+                key={location.name}
+                onClick={() => goToLocation(location.lat, location.lng, location.name)}
+                className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xs transition-all hover:bg-white/20 hover:-translate-y-0.5"
+              >
+                {location.name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
