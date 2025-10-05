@@ -1,0 +1,143 @@
+---
+globs: frontend-react/src/**/*.jsx,frontend-react/src/**/*.js
+description: Frontend spatial UI and mapping requirements
+---
+
+# 🗺️ Frontend Spatial UI Rules
+
+## Interactive Mapping (MANDATORY)
+
+### Required Map Components:
+```jsx
+// Area Selection Component
+<AreaSelector 
+  onAreaSelect={handleAreaSelection}
+  coordinates={[lat, lng]}
+  bounds={bounds}
+  areaData={selectedAreaData}
+/>
+
+// Environmental Data Visualization
+<EnvironmentalLayer
+  dataType="heat" // heat, air_quality, water_stress, flood_risk
+  areaBounds={selectedBounds}
+  timeRange={timeRange}
+  showTrends={true}
+/>
+
+// NASA Data Overlay
+<NASAImageryLayer
+  imageryData={nasaImagery}
+  eventMarkers={eonetEvents}
+  climateData={climateData}
+/>
+```
+
+### Spatial State Management:
+```javascript
+// Zustand store must include spatial state
+const useSpatialStore = create((set) => ({
+  selectedArea: null,
+  areaBounds: null,
+  coordinates: [2.3, 111.82], // Default: Sibu, Malaysia
+  zoomLevel: 12,
+  dataLayers: {
+    heat: false,
+    airQuality: false,
+    floodRisk: false,
+    nasaImagery: true
+  },
+  
+  // Actions must be spatially aware
+  selectArea: (areaData) => set({
+    selectedArea: areaData,
+    areaBounds: areaData.bounds,
+    coordinates: areaData.coordinates
+  }),
+  
+  updateDataLayer: (layer, enabled) => set((state) => ({
+    dataLayers: { ...state.dataLayers, [layer]: enabled }
+  }))
+}));
+```
+
+### Area Selection Requirements:
+```javascript
+// Must support polygon drawing and selection
+const AreaSelectionTool = {
+  // Draw polygon on map
+  drawPolygon: (map) => {
+    const drawControl = new L.Control.Draw({
+      draw: {
+        polygon: true,
+        rectangle: true,
+        marker: false,
+        circle: false
+      }
+    });
+    map.addControl(drawControl);
+  },
+  
+  // Calculate area and bounds
+  calculateAreaMetrics: (polygon) => {
+    return {
+      area: L.GeometryUtil.geodesicArea(polygon.getLatLngs()[0]),
+      bounds: polygon.getBounds(),
+      center: polygon.getBounds().getCenter()
+    };
+  }
+};
+```
+
+### AI Chat Integration:
+```jsx
+// Chat must include spatial context
+<AIChat 
+  selectedArea={selectedArea}
+  areaData={areaData}
+  environmentalData={environmentalData}
+  onAnalysisComplete={handleAnalysisResult}
+/>
+
+// Chat messages must be area-specific
+const sendAreaSpecificMessage = (message, areaData) => {
+  api.post('/api/chat', {
+    message,
+    selectedAreaData: areaData,
+    coordinates: areaData.coordinates,
+    bounds: areaData.bounds
+  });
+};
+```
+
+## UI Requirements:
+
+### Must Include:
+1. **Interactive Map** - Leaflet.js with area selection
+2. **Environmental Layers** - Heat, air quality, flood risk visualization
+3. **NASA Data Overlays** - Satellite imagery and disaster events
+4. **Area Analysis Panel** - Selected area information and metrics
+5. **AI Chat Interface** - Context-aware chat with area data
+6. **Historical Trends** - Charts showing environmental changes over time
+
+### Responsive Design:
+- Map must work on mobile devices
+- Touch gestures for map interaction
+- Responsive panels that don't block the map
+- Accessible controls for area selection
+
+### Performance:
+- Map tiles must load in <2 seconds
+- Area selection must respond in <500ms
+- Data visualization must update in real-time
+- Smooth animations for layer transitions
+
+## Forbidden UI Patterns:
+- Non-interactive maps
+- Generic chat interfaces without spatial context
+- Static data displays without geographic correlation
+- UI elements that don't support area selection
+
+---
+
+**Rule: Every UI component must be spatially aware and interactive!**

@@ -1,0 +1,153 @@
+---
+alwaysApply: true
+description: Geographic focus on Sibu, Malaysia and Southeast Asian cities
+---
+
+# 🇲🇾 Sibu, Malaysia Focus - NASA Space Apps Challenge 2025
+
+## Primary Geographic Focus
+
+### Sibu, Sarawak, Malaysia:
+```javascript
+// Default coordinates for Sibu
+const SIBU_COORDINATES = {
+  lat: 2.3,
+  lng: 111.82,
+  city: "Sibu",
+  state: "Sarawak", 
+  country: "Malaysia",
+  population: 162676,
+  area_km2: 129.5
+};
+
+// Sibu Jaya (secondary focus)
+const SIBU_JAYA_COORDINATES = {
+  lat: 2.2917,
+  lng: 111.8250,
+  city: "Sibu Jaya",
+  state: "Sarawak",
+  country: "Malaysia"
+};
+```
+
+### Southeast Asian Cities (Secondary):
+```javascript
+const SOUTHEAST_ASIA_CITIES = [
+  { name: "Kuala Lumpur", lat: 3.1390, lng: 101.6869, country: "Malaysia" },
+  { name: "Jakarta", lat: -6.2088, lng: 106.8456, country: "Indonesia" },
+  { name: "Manila", lat: 14.5995, lng: 120.9842, country: "Philippines" },
+  { name: "Bangkok", lat: 13.7563, lng: 100.5018, country: "Thailand" },
+  { name: "Singapore", lat: 1.3521, lng: 103.8198, country: "Singapore" },
+  { name: "Ho Chi Minh City", lat: 10.8231, lng: 106.6297, country: "Vietnam" },
+  { name: "Mumbai", lat: 19.0760, lng: 72.8777, country: "India" },
+  { name: "Tokyo", lat: 35.6762, lng: 139.6503, country: "Japan" }
+];
+```
+
+## Regional Environmental Challenges:
+
+### Climate Issues in Southeast Asia:
+- **Heat Islands** - Urban heat in tropical climate
+- **Monsoon Flooding** - Seasonal heavy rainfall
+- **Air Pollution** - Industrial and vehicular emissions
+- **Deforestation** - Loss of green cover
+- **Sea Level Rise** - Coastal city vulnerability
+
+### Sibu-Specific Context:
+```python
+# Environmental factors specific to Sibu
+SIBU_ENVIRONMENTAL_CONTEXT = {
+    "climate": "Tropical rainforest",
+    "rainfall": "High (2500-3000mm annually)",
+    "temperature": "24-32°C year-round",
+    "humidity": "80-90%",
+    "flood_risk": "High due to monsoon",
+    "heat_risk": "Moderate due to vegetation",
+    "air_quality": "Good due to forest proximity",
+    "green_coverage": "High - surrounded by rainforest"
+}
+```
+
+## AI Recommendations Context:
+
+### Urban Resilience Strategies for Sibu:
+```python
+# AI should provide Sibu-specific recommendations
+SIBU_RECOMMENDATIONS = {
+    "flood_mitigation": [
+        "Improved drainage systems",
+        "Green infrastructure for water absorption",
+        "Elevated building foundations",
+        "Monsoon-ready urban planning"
+    ],
+    "heat_reduction": [
+        "Preserve existing rainforest",
+        "Green roofs and walls",
+        "Shaded walkways",
+        "Reflective building materials"
+    ],
+    "air_quality": [
+        "Maintain forest buffers",
+        "Electric public transport",
+        "Industrial emission controls",
+        "Urban tree planting"
+    ]
+}
+```
+
+## Data Sources for Southeast Asia:
+
+### NASA Data Relevance:
+- **Landsat imagery** - Monitor deforestation and urban growth
+- **MODIS data** - Track heat islands and air quality
+- **EONET events** - Monitor floods, fires, and storms
+- **Climate data** - Historical weather patterns
+
+### Local Data Integration:
+```python
+# Integrate with Malaysian/Southeast Asian data sources
+LOCAL_DATA_SOURCES = {
+    "malaysia_met": "Malaysian Meteorological Department",
+    "sarawak_drainage": "Sarawak Drainage and Irrigation Department", 
+    "local_sensors": "Community air quality monitoring",
+    "satellite_data": "NASA Earth observation data"
+}
+```
+
+## Default Application State:
+
+### Map Defaults:
+```javascript
+// Application should start with Sibu view
+const DEFAULT_MAP_STATE = {
+  center: [2.3, 111.82],  // Sibu coordinates
+  zoom: 12,
+  selectedCity: "Sibu",
+  focusArea: "Sibu Jaya"
+};
+```
+
+### AI System Prompts:
+```python
+# AI should be contextually aware of Sibu
+SIBU_AI_PROMPT = """
+You are an urban planning AI specializing in Southeast Asian cities, 
+particularly Sibu, Sarawak, Malaysia. You understand:
+
+- Tropical climate challenges (monsoon, heat, humidity)
+- Rainforest conservation importance
+- Flood risk management in river cities
+- Cultural and economic context of Sarawak
+- Malaysian urban development patterns
+
+Provide recommendations that are:
+- Culturally appropriate for Malaysia
+- Climate-appropriate for tropical regions
+- Economically feasible for developing cities
+- Environmentally sustainable for rainforest regions
+"""
+```
+
+---
+
+**Rule: Every feature must consider Sibu and Southeast Asian urban resilience needs!**

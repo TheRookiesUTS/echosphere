@@ -1,0 +1,96 @@
+---
+globs: backend/app/services/nasa_service.py,backend/app/routers/nasa.py
+description: NASA API integration and Earth observation data rules
+---
+
+# 🛰️ NASA Integration Rules
+
+## NASA API Integration (MANDATORY)
+
+### Required NASA Endpoints:
+```python
+# Earth Imagery API
+GET /api/nasa/imagery
+- Parameters: lat, lng, dim (dimension in degrees)
+- Returns: Satellite imagery with geographic bounds
+- Caching: Cache with spatial bounds and timestamp
+
+# EONET Natural Events API  
+GET /api/nasa/eonet/events
+- Parameters: status, limit, bounds (geographic)
+- Returns: Natural disasters (fires, floods, storms)
+- Spatial filtering: Only events within area bounds
+
+# NASA POWER Climate API
+GET /api/nasa/power/climate
+- Parameters: lat, lng, start_date, end_date
+- Returns: Climate and weather data
+- Time-series: Historical climate trends
+```
+
+### Spatial Data Handling:
+```python
+# All NASA data must include spatial information
+class NASADataResponse(BaseModel):
+    data: Dict
+    coordinates: List[float]  # [lat, lng]
+    bounds: Dict             # Bounding box
+    timestamp: datetime
+    data_type: str          # imagery, eonet, climate
+    spatial_reference: str   # SRID or coordinate system
+```
+
+### Caching Strategy:
+```python
+# Cache NASA responses with spatial keys
+def cache_nasa_data_with_bounds(data: Dict, bounds: Geometry) -> None:
+    cache_key = f"nasa_{data_type}_{hash_bounds(bounds)}_{timestamp}"
+    cache.set(cache_key, data, ttl=3600)  # 1 hour TTL
+
+# Spatial cache retrieval
+def get_cached_nasa_data(bounds: Geometry, data_type: str) -> Optional[Dict]:
+    spatial_key = generate_spatial_cache_key(bounds, data_type)
+    return cache.get(spatial_key)
+```
+
+## Data Processing Rules:
+
+### Earth Imagery:
+- Must include geographic bounds
+- Store imagery metadata with coordinates
+- Support different satellite sources (Landsat, Sentinel, etc.)
+- Enable area-based imagery retrieval
+
+### EONET Events:
+- Filter events by geographic proximity
+- Store event locations as PostGIS points
+- Link events to affected areas
+- Track event progression over time
+
+### Climate Data:
+- Store as time-series data
+- Include temperature, precipitation, humidity
+- Calculate trends and anomalies
+- Support historical analysis
+
+## Error Handling:
+```python
+# Graceful degradation when NASA APIs are unavailable
+def handle_nasa_api_error(error: Exception, area_data: AreaData) -> Dict:
+    return {
+        "status": "degraded",
+        "message": "NASA data temporarily unavailable",
+        "fallback_data": get_cached_data(area_data),
+        "retry_after": 300  # 5 minutes
+    }
+```
+
+## Performance Requirements:
+- NASA API calls must complete in <5 seconds
+- Spatial queries for cached data in <100ms
+- Batch multiple area requests efficiently
+- Implement rate limiting to respect NASA quotas
+
+---
+
+**Rule: Every NASA integration must be spatially aware and cached!**

@@ -1,0 +1,129 @@
+---
+alwaysApply: true
+description: Development workflow and code quality standards
+---
+
+# 🔄 Development Workflow Rules
+
+## Development Priorities (IN ORDER):
+
+### 1. Database First (CRITICAL)
+```bash
+# ALWAYS set up database infrastructure first
+- PostgreSQL + PostGIS installation
+- Database schema with spatial tables
+- Alembic migrations
+- Seed data for testing
+```
+
+### 2. Spatial Data Models
+```python
+# Define spatial models before building features
+- Area models with PostGIS geometry
+- Environmental metrics with coordinates
+- NASA data with spatial bounds
+- Chat history with geographic context
+```
+
+### 3. NASA API Integration
+```python
+# Integrate NASA APIs with spatial awareness
+- Earth imagery with geographic bounds
+- EONET events with spatial filtering
+- Climate data with coordinate-based queries
+- Caching with spatial keys
+```
+
+### 4. AI with Geographic Context
+```python
+# Build AI that understands geography
+- Area-specific prompts
+- Environmental data context
+- NASA data integration in responses
+- Spatial recommendations
+```
+
+### 5. Interactive Frontend
+```jsx
+# Build React frontend with spatial UI
+- Interactive mapping with area selection
+- Environmental data visualization
+- AI chat with area context
+- Real-time updates
+```
+
+## Code Quality Standards:
+
+### Python Backend:
+```python
+# Required imports for spatial operations
+from sqlalchemy import func
+from geoalchemy2 import Geometry
+from shapely.geometry import Point, Polygon
+
+# All database models must include spatial fields
+class SpatialModel(Base):
+    geometry: Geometry = Column(Geometry('POINT', srid=4326))
+    bounds: Geometry = Column(Geometry('POLYGON', srid=4326))
+```
+
+### React Frontend:
+```javascript
+// Required spatial libraries
+import L from 'leaflet';
+import 'leaflet-draw';
+import { useSpatialStore } from './store/spatialStore';
+
+// All components must handle spatial data
+const SpatialComponent = ({ areaData, coordinates, bounds }) => {
+  // Component logic
+};
+```
+
+## Testing Requirements:
+
+### Database Tests:
+```python
+# Test spatial queries
+def test_spatial_queries():
+    area = create_test_area_with_geometry()
+    metrics = get_metrics_within_bounds(area.bounds)
+    assert len(metrics) > 0
+
+# Test NASA API integration
+def test_nasa_api_spatial():
+    nasa_data = fetch_nasa_data_with_bounds(test_bounds)
+    assert nasa_data.coordinates is not None
+```
+
+### Frontend Tests:
+```javascript
+// Test spatial interactions
+describe('Area Selection', () => {
+  test('should select area and update context', () => {
+    const areaData = selectAreaOnMap(mockCoordinates);
+    expect(areaData.bounds).toBeDefined();
+  });
+});
+```
+
+## Deployment Checklist:
+- [ ] PostgreSQL + PostGIS installed
+- [ ] Database migrations applied
+- [ ] NASA API keys configured
+- [ ] Spatial indexes created
+- [ ] Seed data loaded
+- [ ] React build completed
+- [ ] Spatial queries tested
+
+## Forbidden Practices:
+- Building features without database foundation
+- Non-spatial API endpoints
+- Generic AI responses without geographic context
+- Static maps without interaction
+- Ignoring NASA data integration
+- Skipping spatial testing
+
+---
+
+**Rule: Always build spatial-first, test spatial functionality, deploy with spatial awareness!**

@@ -1,0 +1,41 @@
+---
+alwaysApply: true
+description: Core hackathon objectives and project mission
+---
+
+# 🌍 EchoSphere - NASA Space Apps Challenge 2025
+
+## Core Mission: "Pathways to Healthy Cities & Human Settlement"
+
+**CRITICAL OBJECTIVE:** Build a Digital Twin for Urban Resilience that uses NASA Earth observation data to help cities become more resilient to climate change.
+
+### 🎯 Primary Focus Areas:
+1. **Urban Resilience Digital Twin** - Real-time environmental monitoring and analysis
+2. **NASA Earth Data Integration** - Satellite imagery, EONET events, climate data
+3. **AI-Powered Urban Planning** - Context-aware recommendations for city planners
+4. **Environmental Analysis** - Heat islands, air quality, water stress, flood risk
+5. **Geographic Focus** - Sibu, Malaysia and Southeast Asian cities
+
+### 🚫 What We're NOT Building:
+- Generic web applications
+- Simple data visualization dashboards
+- Non-spatial analysis tools
+- Applications without NASA integration
+
+### ✅ Success Criteria:
+- Real-time environmental data from NASA APIs
+- Spatial analysis with PostGIS
+- AI that understands geographic context
+- Historical trend analysis
+- Area-specific planning recommendations
+- Interactive mapping with area selection
+
+### 🎯 Always Ask:
+- "Does this feature help cities become more resilient?"
+- "Are we using NASA Earth observation data effectively?"
+- "Does this support spatial analysis and geographic context?"
+- "Will this help urban planners make better decisions?"
+
+---
+
+**Remember: We're building a Digital Twin, not just a web app!**

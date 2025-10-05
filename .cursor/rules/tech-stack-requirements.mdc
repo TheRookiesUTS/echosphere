@@ -1,0 +1,65 @@
+---
+alwaysApply: true
+description: Required technology stack and architecture decisions
+---
+
+# 🛠️ Technology Stack Requirements
+
+## Core Architecture (MANDATORY)
+
+### Backend Stack:
+- **FastAPI** - Async Python web framework
+- **PostgreSQL 15+** - Primary database (REQUIRED)
+- **PostGIS 3.3+** - Geospatial extensions (REQUIRED)
+- **SQLAlchemy 2.0** - Async ORM with spatial support
+- **Alembic** - Database migrations
+- **Pydantic** - Data validation and settings
+
+### Frontend Stack:
+- **React 18** - UI framework (NOT vanilla JS)
+- **Vite** - Build tool with HMR
+- **Tailwind CSS** - Utility-first styling
+- **Leaflet.js** - Interactive mapping
+- **Zustand** - State management
+
+### External APIs:
+- **NASA APIs** - Earth imagery, EONET, climate data
+- **OpenRouter** - DeepSeek AI integration
+- **OpenAQ** - Air quality data
+
+## 🚨 CRITICAL REQUIREMENTS:
+
+### Database (NON-NEGOTIABLE):
+```sql
+-- Must have PostGIS extension
+CREATE EXTENSION postgis;
+
+-- Must support spatial data types
+- GEOMETRY columns for areas
+- GEOGRAPHY columns for coordinates
+- Spatial indexes for performance
+```
+
+### Spatial Data Models:
+```python
+# Required spatial fields in all models
+location: Geometry  # Point, Polygon, etc.
+bounds: Geometry    # Bounding boxes
+area: Float        # Area calculations
+```
+
+### API Endpoints (MANDATORY):
+- `POST /api/chat` - AI with geographic context
+- `POST /api/analyze-area` - Spatial analysis
+- `GET /api/nasa/*` - NASA data integration
+- `GET /api/health` - System status
+
+## ❌ FORBIDDEN:
+- SQLite or file-based storage
+- Non-spatial database queries
+- Static data without geographic context
+- APIs without NASA integration
+
+---
+
+**Rule: Every feature must support spatial analysis and NASA data integration!**

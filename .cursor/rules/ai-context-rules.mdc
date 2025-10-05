@@ -1,0 +1,97 @@
+---
+globs: backend/app/services/ai_service.py,backend/app/routers/chat.py
+description: AI service context and geographic awareness rules
+---
+
+# 🤖 AI Context and Geographic Awareness Rules
+
+## Context-Aware AI Requirements
+
+### Geographic Context (MANDATORY):
+```python
+# AI must always know the geographic context
+class AreaData(BaseModel):
+    area_id: int
+    name: str
+    coordinates: List[float]  # [lat, lng]
+    bounds: List[List[float]] # Bounding box
+    city: str
+    area_km2: float
+    population: Optional[int]
+    
+# AI prompt must include geographic context
+GEOGRAPHIC_CONTEXT_PROMPT = """
+You are analyzing the area: {area_name} in {city}
+Coordinates: {lat}, {lng}
+Area: {area_km2} km²
+Population: {population}
+Historical environmental data: {historical_data}
+"""
+```
+
+### Environmental Data Context:
+```python
+# AI must have access to environmental history
+def get_area_environmental_context(area_id: int) -> Dict:
+    return {
+        "heat_trends": get_heat_metrics(area_id),
+        "air_quality": get_air_quality_metrics(area_id),
+        "flood_risk": get_flood_risk_data(area_id),
+        "green_coverage": get_green_space_data(area_id),
+        "historical_changes": get_trend_analysis(area_id)
+    }
+```
+
+### NASA Data Integration:
+```python
+# AI responses must reference NASA data
+def enhance_ai_context_with_nasa_data(area_data: AreaData) -> Dict:
+    nasa_data = {
+        "satellite_imagery": get_nasa_imagery(area_data.coordinates),
+        "eonet_events": get_nearby_disasters(area_data.bounds),
+        "climate_data": get_nasa_climate_data(area_data.coordinates)
+    }
+    return nasa_data
+```
+
+## AI Response Requirements:
+
+### Must Include:
+1. **Geographic Specificity** - References to actual coordinates and areas
+2. **NASA Data Citations** - "Based on NASA satellite data..."
+3. **Historical Context** - References to trends and changes over time
+4. **Actionable Recommendations** - Specific to the analyzed area
+5. **Environmental Metrics** - Actual data values and thresholds
+
+### Response Format:
+```python
+def format_ai_response(analysis: str, area_data: AreaData, nasa_data: Dict) -> str:
+    return f"""
+    **Analysis for {area_data.name}, {area_data.city}**
+    
+    **Current Environmental Status:**
+    - Heat Index: {nasa_data['heat_index']}°C
+    - Air Quality: {nasa_data['air_quality']} AQI
+    - Flood Risk: {nasa_data['flood_risk']}
+    
+    **NASA Satellite Data:**
+    - Latest imagery: {nasa_data['imagery_date']}
+    - Recent events: {nasa_data['recent_events']}
+    
+    **Recommendations for Urban Resilience:**
+    {analysis}
+    
+    **Data Sources:** NASA Earth Observation, OpenAQ, Local Sensors
+    """
+```
+
+## Forbidden AI Behaviors:
+- Generic responses without geographic context
+- Recommendations not based on actual environmental data
+- Ignoring NASA satellite data in analysis
+- Responses without spatial awareness
+- Non-actionable or vague recommendations
+
+---
+
+**Rule: AI must always be geographically and environmentally aware!**

@@ -1,0 +1,81 @@
+---
+globs: backend/app/models/*.py,backend/app/database.py,backend/alembic/versions/*.py
+description: Database architecture and spatial data modeling rules
+---
+
+# 🗄️ Database Architecture Rules
+
+## Spatial Data Models (MANDATORY)
+
+### Core Tables Required:
+```python
+# Areas table - Geographic regions
+class Area(Base):
+    id: int
+    name: str
+    geometry: Geometry  # PostGIS geometry
+    bounds: Geometry    # Bounding box
+    city: str          # Sibu, Kuala Lumpur, etc.
+    area_km2: float
+    
+# Environmental Metrics - Time-series data
+class EnvironmentalMetric(Base):
+    id: int
+    area_id: int       # Foreign key to Area
+    metric_type: str   # heat, air_quality, water_stress
+    value: float
+    timestamp: datetime
+    coordinates: Geometry  # Point location
+    
+# NASA Data Cache - Satellite imagery and events
+class NASAData(Base):
+    id: int
+    data_type: str     # imagery, eonet, climate
+    coordinates: Geometry
+    bounds: Geometry
+    data: JSON         # Raw NASA response
+    timestamp: datetime
+    
+# Chat History - AI conversations with context
+class ChatHistory(Base):
+    id: int
+    session_id: str
+    area_id: int       # Geographic context
+    message: str
+    response: str
+    timestamp: datetime
+```
+
+## Spatial Queries (REQUIRED):
+```python
+# All queries must support spatial operations
+def get_areas_within_bounds(bounds: Geometry) -> List[Area]:
+    return session.query(Area).filter(
+        func.ST_Intersects(Area.geometry, bounds)
+    ).all()
+
+def get_metrics_near_point(point: Geometry, radius_km: float) -> List[Metric]:
+    return session.query(EnvironmentalMetric).filter(
+        func.ST_DWithin(
+            EnvironmentalMetric.coordinates, 
+            point, 
+            radius_km * 1000  # Convert km to meters
+        )
+    ).all()
+```
+
+## Migration Rules:
+- Every migration must include spatial indexes
+- All geometry columns must have SRID 4326 (WGS84)
+- Time-series tables must have timestamp indexes
+- Foreign keys must maintain spatial relationships
+
+## Performance Requirements:
+- Spatial queries must complete in <100ms
+- All geometry columns must have spatial indexes
+- Time-series data must be partitioned by date
+- NASA API responses must be cached with geographic bounds
+
+---
+
+**Rule: Every database operation must be spatially aware!**
