@@ -3,15 +3,15 @@ import { useState, useRef, useEffect } from 'react'
 import { useStore } from '../../store/useStore'
 
 const suggestionQuestions = [
-  'What are the best locations for green infrastructure?',
-  'How can we reduce urban heat islands?',
-  'Where should we build flood mitigation systems?',
+  'What is the climate like in this location?',
+  'How can we reduce urban heat islands here?',
+  'What are the environmental challenges in this area?',
 ]
 
 export default function AIAssistant() {
   const [inputMessage, setInputMessage] = useState('')
   const messagesEndRef = useRef(null)
-  const { chatMessages, sendChatMessage, selectedAreaData, analyzeSelectedArea } = useStore()
+  const { chatMessages, sendChatMessage, selectedAreaData, analyzeSelectedArea, mapCenter, selectedArea } = useStore()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -50,6 +50,12 @@ export default function AIAssistant() {
         <div className="flex items-center gap-2 text-xs text-gray-400">
           <div className="w-2 h-2 rounded-full bg-success-500 animate-pulse-slow"></div>
           <span>Ready</span>
+          {(selectedArea || mapCenter) && (
+            <div className="flex items-center gap-1 ml-2 text-primary-400">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary-400"></div>
+              <span>Location-aware</span>
+            </div>
+          )}
         </div>
       </div>
 

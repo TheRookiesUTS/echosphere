@@ -527,7 +527,9 @@ const MapInteractionHandler = memo(function MapInteractionHandler() {
           heatIndex: Math.floor(Math.random() * 15) + 25,
           airQuality: Math.floor(Math.random() * 150) + 50,
           greenCoverage: Math.floor(Math.random() * 60) + 20,
-          floodRisk: Math.random() > 0.5 ? 'Low' : 'Medium'
+          waterStress: Math.floor(Math.random() * 40) + 10,
+          floodRisk: Math.random() > 0.5 ? 'Low' : 'Medium',
+          buildings: Math.floor(Math.random() * 5000) + 500
         }
         
         setSelectedArea(selectedArea)

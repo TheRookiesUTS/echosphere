@@ -39,8 +39,17 @@ export const api = {
     return await axiosInstance.post('/api/chat', data)
   },
 
+  chatWithLocation: async (message, lat, lng, sessionId = 'default') => {
+    return await axiosInstance.post('/api/chat-with-location', null, {
+      params: { message, lat, lng, session_id: sessionId },
+      timeout: 60000 // 60 seconds for AI analysis with NASA data
+    })
+  },
+
   analyzeArea: async (data) => {
-    return await axiosInstance.post('/api/analyze-area', data)
+    return await axiosInstance.post('/api/analyze-area', data, {
+      timeout: 60000 // 60 seconds for AI analysis
+    })
   },
 
   // NASA endpoints

@@ -209,14 +209,36 @@ export const useStore = create(
       
       // Add loading message
       const loadingId = Date.now()
-      state.addChatMessage({ role: 'assistant', content: 'Thinking...', id: loadingId })
+      state.addChatMessage({ role: 'assistant', content: 'Analyzing location and thinking...', id: loadingId })
       
       try {
-        const response = await api.chat({
-          message,
-          selectedAreaData: state.selectedAreaData,
-          sessionId: state.sessionId,
-        })
+        let response
+        
+        // Check if user is asking about a specific location or has selected an area
+        const isLocationQuery = message.toLowerCase().includes('location') || 
+                               message.toLowerCase().includes('here') ||
+                               message.toLowerCase().includes('this area') ||
+                               message.toLowerCase().includes('current') ||
+                               state.selectedArea ||
+                               state.selectedAreaData
+        
+        if (isLocationQuery && state.mapCenter) {
+          // Use location-aware chat with real NASA data
+          console.log('Using location-aware chat with NASA data for:', state.mapCenter)
+          response = await api.chatWithLocation(
+            message, 
+            state.mapCenter[0], // lat
+            state.mapCenter[1], // lng
+            state.sessionId
+          )
+        } else {
+          // Use regular chat
+          response = await api.chat({
+            message,
+            selectedAreaData: state.selectedAreaData,
+            sessionId: state.sessionId,
+          })
+        }
         
         // Remove loading message and add response
         set((state) => ({
@@ -243,7 +265,7 @@ export const useStore = create(
     analyzeSelectedArea: async () => {
       const state = get()
       
-      if (!state.selectedAreaData) {
+      if (!state.selectedAreaData || !state.selectedArea) {
         return
       }
       
@@ -255,12 +277,34 @@ export const useStore = create(
       const loadingId = Date.now()
       state.addChatMessage({
         role: 'assistant',
-        content: 'Performing comprehensive analysis...',
+        content: 'Performing comprehensive AI analysis... This may take up to 60 seconds as we fetch real environmental data and generate detailed insights.',
         id: loadingId
       })
       
       try {
-        const response = await api.analyzeArea({ areaData: state.selectedAreaData })
+        // Calculate center coordinates from bounds
+        const bounds = state.selectedArea.bounds
+        const centerLat = (bounds[0][0] + bounds[1][0]) / 2
+        const centerLng = (bounds[0][1] + bounds[1][1]) / 2
+        
+        // Format data according to backend AreaData schema
+        const areaData = {
+          area: parseFloat(state.selectedArea.area),
+          center: { lat: centerLat, lng: centerLng },
+          bounds: {
+            southwest: { lat: bounds[0][0], lng: bounds[0][1] },
+            northeast: { lat: bounds[1][0], lng: bounds[1][1] }
+          },
+          heatIndex: state.selectedAreaData.heatIndex,
+          airQuality: state.selectedAreaData.airQuality,
+          greenCoverage: state.selectedAreaData.greenCoverage,
+          waterStress: state.selectedAreaData.waterStress || 0,
+          floodRisk: state.selectedAreaData.floodRisk,
+          population: state.selectedAreaData.population,
+          buildings: state.selectedAreaData.buildings || Math.floor(state.selectedAreaData.population / 10)
+        }
+        
+        const response = await api.analyzeArea({ areaData })
         
         set((state) => ({
           chatMessages: [
